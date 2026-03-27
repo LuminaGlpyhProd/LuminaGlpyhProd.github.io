@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel | Evelyn Animation</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
+    :root {
+      --bg:#08080b;--s1:#111116;--s2:#17171d;--border:rgba(255,255,255,0.07);
+      --accent:#3b82f6;--grad:linear-gradient(135deg,#3b82f6,#2dd4bf);
+      --text:#fff;--muted:#8892a4;--red:#ef4444;--green:#22c55e;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;}
+    a{color:inherit;text-decoration:none;}
+
+    /* LOGIN */
+    #login{min-height:100vh;display:flex;align-items:center;justify-content:center;
+      background:radial-gradient(ellipse 60% 50% at 50% 0%,rgba(59,130,246,0.1),transparent);
+      padding:20px;}
+    .login-box{background:var(--s1);border:1px solid var(--border);border-radius:20px;
+      padding:44px;width:100%;max-width:380px;text-align:center;}
+    .login-box h1{font-size:1.4rem;font-weight:800;margin-bottom:6px;}
+    .login-box .sub{color:var(--muted);font-size:0.85rem;margin-bottom:28px;}
+    .login-box input{width:100%;padding:13px 16px;background:var(--bg);border:1px solid var(--border);
+      border-radius:10px;color:#fff;font-size:0.95rem;font-family:'Inter',sans-serif;
+      outline:none;margin-bottom:12px;transition:border-color 0.2s;}
+    .login-box input:focus{border-color:var(--accent);}
+    .login-btn{width:100%;padding:13px;background:var(--grad);color:#fff;border:none;
+      border-radius:100px;font-weight:800;font-size:0.95rem;cursor:pointer;transition:transform 0.2s;}
+    .login-btn:hover{transform:scale(1.03);}
+    #login-err{color:var(--red);font-size:0.83rem;margin-top:10px;display:none;}
+    .login-credit{margin-top:28px;padding-top:22px;border-top:1px solid var(--border);font-size:0.78rem;color:var(--muted);}
+    .login-credit a{color:var(--accent);font-weight:700;}
+
+    /* SHELL */
+    #shell{display:none;min-height:100vh;flex-direction:column;}
+    .a-header{display:flex;justify-content:space-between;align-items:center;padding:0 20px;height:56px;
+      background:rgba(8,8,11,0.95);border-bottom:1px solid var(--border);
+      position:sticky;top:0;z-index:200;backdrop-filter:blur(16px);}
+    .a-header h1{font-size:0.85rem;font-weight:800;text-transform:uppercase;letter-spacing:2px;}
+    .a-hr{display:flex;align-items:center;gap:8px;}
+    .badge{background:var(--accent);color:#fff;font-size:0.66rem;font-weight:800;padding:3px 9px;border-radius:100px;}
+
+    /* MOBILE NAV TOGGLE */
+    .sidebar-toggle{display:none;background:none;border:1px solid var(--border);color:#fff;
+      padding:5px 10px;border-radius:7px;font-size:1rem;cursor:pointer;}
+
+    .a-body{display:flex;flex:1;position:relative;}
+    .sidebar{width:210px;background:var(--s1);border-right:1px solid var(--border);
+      padding:14px 0;position:sticky;top:56px;height:calc(100vh - 56px);
+      overflow-y:auto;flex-shrink:0;display:flex;flex-direction:column;
+      transition:transform 0.25s;}
+    .sb-item{display:flex;align-items:center;gap:8px;padding:10px 16px;color:var(--muted);
+      font-size:0.82rem;font-weight:600;cursor:pointer;border-left:3px solid transparent;
+      transition:0.15s;user-select:none;}
+    .sb-item:hover{color:#fff;background:rgba(255,255,255,0.03);}
+    .sb-item.active{color:#fff;border-left-color:var(--accent);background:rgba(59,130,246,0.07);}
+    .sb-div{height:1px;background:var(--border);margin:7px 0;}
+    .sb-credit{margin-top:auto;padding:14px 16px;border-top:1px solid var(--border);
+      font-size:0.72rem;color:var(--muted);line-height:1.7;}
+    .sb-credit a{color:var(--accent);font-weight:700;}
+
+    .main{flex:1;padding:24px;overflow-y:auto;min-width:0;}
+    .panel{display:none;}
+    .panel.active{display:block;}
+    .p-title{font-size:1.2rem;font-weight:800;margin-bottom:4px;}
+    .p-sub{color:var(--muted);font-size:0.82rem;margin-bottom:20px;line-height:1.6;}
+
+    /* FORMS */
+    label{display:block;font-size:0.72rem;font-weight:700;color:var(--muted);
+      text-transform:uppercase;letter-spacing:0.5px;margin-bottom:5px;}
+    input[type=text],input[type=url],input[type=password],input[type=number],textarea,select{
+      width:100%;padding:10px 12px;background:var(--bg);border:1px solid var(--border);
+      border-radius:9px;color:#fff;font-size:0.86rem;font-family:'Inter',sans-serif;
+      outline:none;resize:vertical;transition:border-color 0.2s;}
+    input:focus,textarea:focus,select:focus{border-color:var(--accent);}
+    select option{background:#111;}
+    .field{margin-bottom:12px;}
+    .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+    @media(max-width:560px){.row2{grid-template-columns:1fr;}}
+
+    /* BUTTONS */
+    .btn-p{padding:10px 20px;background:var(--grad);color:#fff;border:none;border-radius:100px;
+      font-weight:700;font-size:0.83rem;cursor:pointer;font-family:'Inter',sans-serif;transition:transform 0.2s;}
+    .btn-p:hover{transform:scale(1.03);}
+    .btn-s{padding:10px 20px;background:rgba(255,255,255,0.06);color:#fff;border:1px solid var(--border);
+      border-radius:100px;font-weight:600;font-size:0.83rem;cursor:pointer;font-family:'Inter',sans-serif;transition:background 0.2s;}
+    .btn-s:hover{background:rgba(255,255,255,0.1);}
+    .btn-d{padding:6px 12px;background:rgba(239,68,68,0.1);color:var(--red);
+      border:1px solid rgba(239,68,68,0.25);border-radius:7px;font-size:0.76rem;
+      font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:background 0.2s;}
+    .btn-d:hover{background:rgba(239,68,68,0.2);}
+    .btn-add{width:100%;margin-top:8px;padding:10px;background:rgba(59,130,246,0.07);
+      color:var(--accent);border:1px dashed rgba(59,130,246,0.3);border-radius:10px;
+      font-size:0.81rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:background 0.2s;}
+    .btn-add:hover{background:rgba(59,130,246,0.14);}
+    .btn-sm{padding:7px 13px;background:rgba(255,255,255,0.06);color:#fff;border:1px solid var(--border);
+      border-radius:8px;font-size:0.77rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;
+      transition:background 0.2s;white-space:nowrap;}
+    .btn-sm:hover{background:rgba(255,255,255,0.12);}
+    .btn-sm.accent{background:rgba(59,130,246,0.14);color:var(--accent);border-color:rgba(59,130,246,0.3);}
+    .btn-sm.accent:hover{background:rgba(59,130,246,0.24);}
+    /* PASTE BUTTON */
+    .input-with-paste{display:flex;gap:6px;align-items:center;}
+    .input-with-paste input{flex:1;}
+    .btn-paste{padding:6px 10px;background:rgba(255,255,255,0.05);color:var(--muted);
+      border:1px solid var(--border);border-radius:7px;font-size:0.72rem;font-weight:600;
+      cursor:pointer;font-family:'Inter',sans-serif;transition:0.15s;white-space:nowrap;flex-shrink:0;}
+    .btn-paste:hover{background:rgba(255,255,255,0.1);color:#fff;}
+
+    /* ITEMS */
+    .item-list{display:flex;flex-direction:column;gap:8px;}
+    .item{background:var(--s2);border:1px solid var(--border);border-radius:12px;}
+    .item-head{display:flex;justify-content:space-between;align-items:center;
+      padding:12px 16px;cursor:pointer;user-select:none;gap:8px;}
+    .item-head strong{font-size:0.86rem;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+    .item-meta{display:flex;align-items:center;gap:6px;flex-shrink:0;}
+    .tag{display:inline-block;padding:2px 8px;border-radius:100px;font-size:0.67rem;font-weight:700;}
+    .tag-v{background:rgba(59,130,246,0.15);color:#60a5fa;}
+    .tag-i{background:rgba(45,212,191,0.15);color:#2dd4bf;}
+    .tag-y{background:rgba(239,68,68,0.15);color:#f87171;}
+    .tag-pop{background:rgba(59,130,246,0.15);color:#60a5fa;}
+    .item-body{display:none;padding:14px;border-top:1px solid var(--border);}
+    .item-body.open{display:block;}
+
+    /* THUMB */
+    .thumb-row{display:flex;gap:8px;align-items:flex-end;}
+    .thumb-row input{flex:1;}
+    .thumb-prev{width:72px;height:40px;border-radius:6px;background:var(--bg);
+      border:1px solid var(--border);object-fit:cover;flex-shrink:0;display:none;}
+    .thumb-prev.show{display:block;}
+
+
+
+    /* VIDEO TABS */
+    .vid-tabs{display:flex;gap:0;margin-bottom:12px;border:1px solid var(--border);border-radius:9px;overflow:hidden;}
+    .vid-tab{flex:1;padding:8px;text-align:center;font-size:0.78rem;font-weight:700;
+      cursor:pointer;color:var(--muted);background:transparent;border:none;
+      font-family:'Inter',sans-serif;transition:0.15s;}
+    .vid-tab.active{background:var(--accent);color:#fff;}
+
+    /* GITHUB UPLOAD */
+    .gh-box{background:rgba(59,130,246,0.05);border:1px solid rgba(59,130,246,0.18);
+      border-radius:14px;padding:18px;margin-bottom:18px;}
+    .gh-box h3{font-size:0.88rem;font-weight:800;margin-bottom:4px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+    .gh-box p{color:var(--muted);font-size:0.81rem;line-height:1.65;margin-bottom:12px;}
+    .gh-status{font-size:0.77rem;margin-top:8px;padding:6px 11px;border-radius:7px;display:none;}
+    .gh-status.ok{background:rgba(34,197,94,0.12);color:var(--green);display:block;}
+    .gh-status.err{background:rgba(239,68,68,0.12);color:var(--red);display:block;}
+    .gh-status.loading{background:rgba(59,130,246,0.1);color:var(--accent);display:block;}
+    .upload-drop{border:1.5px dashed rgba(59,130,246,0.35);border-radius:10px;padding:24px;
+      text-align:center;cursor:pointer;transition:background 0.2s;position:relative;}
+    .upload-drop:hover,.upload-drop.drag{background:rgba(59,130,246,0.07);}
+    .upload-drop input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+    .upload-drop p{color:var(--muted);font-size:0.82rem;pointer-events:none;}
+    .upload-result{margin-top:10px;background:var(--bg);border:1px solid var(--border);
+      border-radius:8px;padding:10px 13px;display:none;}
+    .upload-result.show{display:block;}
+    .upload-result p{font-size:0.78rem;color:var(--muted);margin-bottom:6px;}
+    .path-row{display:flex;gap:7px;align-items:center;}
+    .path-row code{flex:1;font-size:0.78rem;background:rgba(255,255,255,0.05);
+      padding:5px 9px;border-radius:6px;color:var(--accent);
+      overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+
+    /* CREDITS */
+    .credits-hero-box{background:var(--s1);border:1px solid var(--border);
+      border-radius:16px;padding:28px;margin-bottom:16px;}
+    .credits-person{display:flex;align-items:center;gap:18px;margin-bottom:0;}
+    .credits-ava{width:72px;height:72px;border-radius:50%;overflow:hidden;
+      border:2px solid var(--accent);flex-shrink:0;background:var(--bg);}
+    .credits-ava img{width:100%;height:100%;object-fit:cover;}
+    .credits-name{font-size:1.5rem;font-weight:900;margin-bottom:3px;}
+    .credits-role{color:var(--muted);font-size:0.83rem;margin-bottom:8px;}
+    .credits-links{display:flex;gap:10px;flex-wrap:wrap;}
+    .credits-links a{font-size:0.8rem;color:var(--accent);font-weight:700;}
+
+    /* TECH DETAILS TABLE */
+    .tech-box{background:var(--s1);border:1px solid var(--border);border-radius:16px;padding:28px;}
+    .tech-box h3{font-size:0.75rem;font-weight:700;text-transform:uppercase;
+      letter-spacing:1.5px;color:var(--muted);margin-bottom:16px;}
+    .tech-table{width:100%;border-collapse:collapse;}
+    .tech-table tr{border-bottom:1px solid var(--border);}
+    .tech-table tr:last-child{border-bottom:none;}
+    .tech-table td{padding:10px 0;font-size:0.85rem;vertical-align:top;}
+    .tech-table td:first-child{color:var(--muted);width:46%;padding-right:16px;}
+    .tech-table td:last-child{color:#fff;font-weight:600;}
+
+    /* DOWNLOAD */
+    .dl-box{background:rgba(59,130,246,0.06);border:1px solid rgba(59,130,246,0.2);
+      border-radius:16px;padding:24px;text-align:center;margin-top:18px;}
+    .dl-box h3{font-size:1rem;font-weight:800;margin-bottom:8px;}
+    .dl-box p{color:var(--muted);font-size:0.82rem;line-height:1.7;margin-bottom:14px;}
+    .steps{list-style:none;max-width:460px;margin:0 auto 18px;text-align:left;}
+    .steps li{color:var(--muted);font-size:0.81rem;padding:4px 0;display:flex;gap:9px;align-items:flex-start;}
+    .steps li::before{content:attr(data-n);background:var(--accent);color:#fff;width:17px;height:17px;
+      border-radius:50%;display:flex;align-items:center;justify-content:center;
+      font-size:0.65rem;font-weight:800;flex-shrink:0;margin-top:2px;}
+
+    .toast{position:fixed;bottom:20px;right:20px;color:#fff;padding:11px 18px;border-radius:10px;
+      font-weight:700;font-size:0.84rem;z-index:9999;transform:translateY(60px);opacity:0;transition:0.3s;max-width:calc(100vw - 40px);}
+    .toast.show{transform:translateY(0);opacity:1;}
+    .toast.ok{background:var(--green);}
+    .toast.err{background:var(--red);}
+
+    /* MOBILE SIDEBAR */
+    @media(max-width:680px){
+      .sidebar-toggle{display:block;}
+      .sidebar{position:fixed;top:56px;left:0;bottom:0;z-index:150;transform:translateX(-100%);}
+      .sidebar.open{transform:translateX(0);}
+      .main{padding:16px;}
+    }
+  </style>
+</head>
+<body>
+
+<div id="login">
+  <div class="login-box">
+    <h1>Admin Panel</h1>
+    <p class="sub">Evelyn Animation — Site Manager</p>
+    <input type="password" id="pw" placeholder="Password" onkeydown="if(event.key==='Enter')login()">
+    <button class="login-btn" onclick="login()">Sign In</button>
+    <div id="login-err">Wrong password. Try again.</div>
+    <div class="login-credit">Site built by <a href="https://www.youtube.com/@SpideySpidery" target="_blank" rel="noopener noreferrer">SpideySpidery</a></div>
+  </div>
+</div>
+
+<div id="shell">
+  <div class="a-header">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <button class="sidebar-toggle" id="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+      <h1>⚡ Evelyn Admin</h1>
+    </div>
+    <div class="a-hr">
+      <span class="badge">v2.1</span>
+      <button class="btn-s" onclick="logout()">Log Out</button>
+    </div>
+  </div>
+  <div class="a-body">
+    <div class="sidebar" id="sidebar">
+      <div class="sb-item active" onclick="show('gallery',this)">🎬 &nbsp;Gallery</div>
+      <div class="sb-item" onclick="show('services',this)">🧊 &nbsp;Services</div>
+      <div class="sb-item" onclick="show('pricing',this)">💎 &nbsp;Pricing</div>
+      <div class="sb-item" onclick="show('tos',this)">📄 &nbsp;ToS</div>
+      <div class="sb-item" onclick="show('socials',this)">🔗 &nbsp;Socials</div>
+      <div class="sb-item" onclick="show('contact',this)">💬 &nbsp;Contact</div>
+      <div class="sb-item" onclick="show('general',this)">⚙️ &nbsp;General</div>
+      <div class="sb-div"></div>
+      <div class="sb-item" onclick="show('upload',this)">☁️ &nbsp;Upload Images</div>
+      <div class="sb-item" onclick="show('download',this)">⬇️ &nbsp;Download</div>
+      <div class="sb-div"></div>
+      <div class="sb-item" onclick="show('credits',this)">🏆 &nbsp;Credits</div>
+      <div class="sb-credit">Built by<br><a href="https://www.youtube.com/@SpideySpidery" target="_blank" rel="noopener noreferrer">SpideySpidery</a></div>
+    </div>
+
+    <div class="main">
+
+      <!-- GALLERY -->
+      <div class="panel active" id="panel-gallery">
+        <div class="p-title">Gallery</div>
+        <div class="p-sub">Add, edit, or remove portfolio items. YouTube URLs auto-fill the thumbnail.</div>
+        <div class="item-list" id="list-gallery"></div>
+        <button class="btn-add" onclick="addItem('gallery')">+ Add Item</button>
+      </div>
+
+      <!-- SERVICES -->
+      <div class="panel" id="panel-services">
+        <div class="p-title">Services</div>
+        <div class="p-sub">Edit service offerings shown on Services and Home pages.</div>
+        <div class="item-list" id="list-services"></div>
+        <button class="btn-add" onclick="addItem('services')">+ Add Service</button>
+      </div>
+
+      <!-- PRICING -->
+      <div class="panel" id="panel-pricing">
+        <div class="p-title">Pricing</div>
+        <div class="p-sub">Edit pricing tiers. Mark one as Popular for the Best Value highlight.</div>
+        <div class="item-list" id="list-pricing"></div>
+        <button class="btn-add" onclick="addItem('pricing')">+ Add Tier</button>
+      </div>
+
+      <!-- TOS -->
+      <div class="panel" id="panel-tos">
+        <div class="p-title">Terms of Service</div>
+        <div class="p-sub">Edit each section. Shown as expandable accordions on the site.</div>
+        <div class="field"><label>Intro line</label><textarea id="tos-intro" rows="2"></textarea></div>
+        <div class="item-list" id="list-tos"></div>
+        <button class="btn-add" onclick="addItem('tos')">+ Add Section</button>
+      </div>
+
+      <!-- SOCIALS -->
+      <div class="panel" id="panel-socials">
+        <div class="p-title">Social Links</div>
+        <div class="p-sub">Edit social links. Appear in footer and contact page. Icon keys: yt, x, ig, bsky, patreon, discord.</div>
+        <div class="item-list" id="list-socials"></div>
+        <button class="btn-add" onclick="addItem('socials')">+ Add Social</button>
+      </div>
+
+      <!-- CONTACT -->
+      <div class="panel" id="panel-contact">
+        <div class="p-title">Contact Page</div>
+        <div class="p-sub">Edit the contact card text and Discord avatar.</div>
+        <div class="field">
+          <label>Discord Server Avatar</label>
+          <div class="input-with-paste" style="align-items:center;">
+            <input type="text" id="c-avatar" placeholder="assets/images/discord-avatar.png">
+            <button class="btn-paste" onclick="pasteInto('c-avatar',v=>{S.contactAvatar=v;const p=document.getElementById('c-avatar-prev');p.src=v;p.classList.add('show');})">📋 Paste</button>
+            <img id="c-avatar-prev" class="thumb-prev" style="width:44px;height:44px;border-radius:50%;flex-shrink:0;">
+          </div>
+          <p style="font-size:0.74rem;color:var(--muted);margin-top:5px;">Upload via ☁️ Upload Images, then paste the path here.</p>
+        </div>
+        <div class="field"><label>Heading</label><input type="text" id="c-heading"></div>
+        <div class="field"><label>Description</label><textarea id="c-desc" rows="3"></textarea></div>
+        <div class="field"><label>Button Label</label><input type="text" id="c-btn"></div>
+        <div class="field"><label>Note below button (HTML allowed)</label><textarea id="c-note" rows="3"></textarea></div>
+      </div>
+
+      <!-- GENERAL -->
+      <div class="panel" id="panel-general">
+        <div class="p-title">General</div>
+        <div class="p-sub">Site name, tagline, hero text, Discord info.</div>
+        <div class="field"><label>Site Name</label><input type="text" id="g-name"></div>
+        <div class="field"><label>Footer Tagline</label><input type="text" id="g-tagline"></div>
+        <div class="field"><label>Hero Title</label><input type="text" id="g-hero"></div>
+        <div class="field"><label>Hero Subtitle</label><textarea id="g-sub" rows="3"></textarea></div>
+        <div class="row2">
+          <div class="field"><label>Hero Button 1</label><input type="text" id="g-cta1"></div>
+          <div class="field"><label>Hero Button 2</label><input type="text" id="g-cta2"></div>
+        </div>
+        <div class="field"><label>Discord Invite URL</label>
+          <div class="input-with-paste">
+            <input type="url" id="g-discord">
+            <button class="btn-paste" onclick="pasteInto('g-discord',v=>S.discordUrl=v)">📋 Paste</button>
+          </div></div>
+        <div class="field"><label>Discord Short Code</label><input type="text" id="g-dcode"></div>
+      </div>
+
+      <!-- UPLOAD -->
+      <div class="panel" id="panel-upload">
+        <div class="p-title">Upload Images</div>
+        <div class="p-sub">Upload images directly to your GitHub repo. They land in <code style="background:rgba(255,255,255,0.06);padding:2px 6px;border-radius:4px;font-size:0.8rem;">assets/images/</code> and go live in ~30 seconds.</div>
+        <div class="gh-box">
+          <h3>🔑 GitHub Setup <span id="gh-badge" style="display:none;background:rgba(34,197,94,0.15);color:var(--green);font-size:0.67rem;padding:3px 9px;border-radius:100px;font-weight:700;">Connected ✓</span></h3>
+          <p>Saved in your browser only — never sent anywhere except directly to GitHub's API.</p>
+          <div class="row2">
+            <div class="field"><label>GitHub Username</label><input type="text" id="gh-user" placeholder="yourname"></div>
+            <div class="field"><label>Repository Name</label><input type="text" id="gh-repo" placeholder="evelyn-animation"></div>
+          </div>
+          <div class="field">
+            <label>Personal Access Token <span style="color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0;font-size:0.7rem;">(Settings → Developer settings → Fine-grained token → Contents: Read &amp; Write)</span></label>
+            <div style="display:flex;gap:7px;">
+              <input type="password" id="gh-token" placeholder="github_pat_...">
+              <button class="btn-sm accent" onclick="saveGH()">Save</button>
+              <button class="btn-sm" onclick="testGH()">Test</button>
+            </div>
+          </div>
+          <div id="gh-status" class="gh-status"></div>
+        </div>
+        <div class="gh-box">
+          <h3>📤 Upload File</h3>
+          <p>JPG, PNG, GIF, WebP. Path is copied to clipboard after upload.</p>
+          <div class="field"><label>Filename (optional)</label><input type="text" id="upload-name" placeholder="discord-avatar.png"></div>
+          <div class="upload-drop" id="upload-drop">
+            <input type="file" id="upload-file" accept="image/*" onchange="onFileSelect(this)">
+            <p><strong>Click to browse</strong> or drag & drop</p>
+          </div>
+          <div id="upload-preview-wrap" style="display:none;margin-top:10px;">
+            <img id="upload-preview" style="max-height:100px;border-radius:7px;border:1px solid var(--border);">
+            <p style="font-size:0.76rem;color:var(--muted);margin-top:5px;" id="upload-info"></p>
+          </div>
+          <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="btn-p" onclick="uploadToGH()">☁️ Upload to GitHub</button>
+            <button class="btn-s" onclick="clearUpload()">Clear</button>
+          </div>
+          <div id="upload-status" class="gh-status"></div>
+          <div class="upload-result" id="upload-result">
+            <p>✅ Uploaded! Use this path:</p>
+            <div class="path-row">
+              <code id="upload-path"></code>
+              <button class="btn-sm accent" onclick="copyPath()">Copy</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DOWNLOAD -->
+      <div class="panel" id="panel-download">
+        <div class="p-title">Save & Deploy</div>
+        <div class="p-sub">Download content.js and push it to GitHub to go live.</div>
+        <div class="dl-box">
+          <h3>How to update your live site</h3>
+          <p>One-file swap, no coding needed.</p>
+          <ol class="steps">
+            <li data-n="1">Click <strong>Download content.js</strong> below</li>
+            <li data-n="2">Go to your GitHub repository</li>
+            <li data-n="3">Find <strong>content.js</strong> → click the pencil ✏️ icon</li>
+            <li data-n="4">Select all, delete, paste your downloaded file's contents</li>
+            <li data-n="5">Click <strong>Commit changes</strong></li>
+            <li data-n="6">Live in ~30 seconds ✅</li>
+          </ol>
+          <button class="btn-p" onclick="dlContent()">⬇ Download content.js</button>
+        </div>
+      </div>
+
+      <!-- CREDITS -->
+      <div class="panel" id="panel-credits">
+        <div class="p-title">Credits</div>
+        <div class="p-sub">About the developer and technical details.</div>
+        <div class="credits-hero-box">
+          <div class="credits-person">
+            <div class="credits-ava">
+              <img src="https://www.mineimatorforums.com/uploads/monthly_2026_03/channels4_profile.thumb.jpg.d02ae15dad08abac2e75f4cbe144096d.jpg"
+                onerror="this.parentElement.style.background='linear-gradient(135deg,#3b82f6,#2dd4bf)';this.style.display='none'"
+                alt="SpideySpidery">
+            </div>
+            <div>
+              <div class="credits-name">SpideySpidery</div>
+              <div class="credits-role">He / Him &nbsp;·&nbsp; Animator &nbsp;·&nbsp; Game Developer &nbsp;·&nbsp; Youtuber</div>
+              <div class="credits-links">
+                <a href="https://www.youtube.com/@SpideySpidery" target="_blank" rel="noopener noreferrer">youtube.com/@SpideySpidery</a>
+                <a href="https://spideyspidery.itch.io" target="_blank" rel="noopener noreferrer">spideyspidery.itch.io</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="tech-box">
+          <h3>Technical Details</h3>
+          <table class="tech-table">
+            <tr><td>Site</td><td>Evelyn Animation</td></tr>
+            <tr><td>Version</td><td>2.1</td></tr>
+            <tr><td>Built by</td><td>SpideySpidery</td></tr>
+            <tr><td>Hosting</td><td>GitHub Pages</td></tr>
+            <tr><td>Stack</td><td>Vanilla HTML / CSS / JS</td></tr>
+            <tr><td>Frameworks</td><td>None</td></tr>
+            <tr><td>Fonts</td><td>Inter (Google Fonts)</td></tr>
+            <tr><td>Content layer</td><td>content.js</td></tr>
+            <tr><td>Database</td><td>None</td></tr>
+            <tr><td>Auth</td><td>Client-side (sessionStorage)</td></tr>
+            <tr><td>Asset storage</td><td>GitHub API v3</td></tr>
+            <tr><td>Animation</td><td>Canvas API (rAF)</td></tr>
+            <tr><td>Libraries</td><td>None</td></tr>
+            <tr><td>Browser support</td><td>Chrome, Firefox, Safari, Edge</td></tr>
+            <tr><td>Structure</td><td>Flat — all pages at root</td></tr>
+            <tr><td>Page count</td><td>6 + admin</td></tr>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="content.js"></script>
+<script>
+const PASSWORD = "evelyn2026";
+
+function login(){
+  if(document.getElementById('pw').value===PASSWORD){sessionStorage.setItem('ea_auth','1');boot();}
+  else{document.getElementById('login-err').style.display='block';}
+}
+function logout(){sessionStorage.removeItem('ea_auth');location.reload();}
+function boot(){
+  document.getElementById('login').style.display='none';
+  document.getElementById('shell').style.display='flex';
+  load();loadGHSettings();
+}
+if(sessionStorage.getItem('ea_auth')==='1')boot();
+
+function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');}
+// Close sidebar on item click (mobile)
+document.querySelectorAll('.sb-item').forEach(i=>i.addEventListener('click',()=>{
+  if(window.innerWidth<=680)document.getElementById('sidebar').classList.remove('open');
+}));
+
+let S;
+function load(){
+  S=JSON.parse(JSON.stringify(SITE));
+  if(!S.heroCta1)S.heroCta1='View Portfolio';
+  if(!S.heroCta2)S.heroCta2='Hire Me';
+  if(!S.contactAvatar)S.contactAvatar='assets/images/discord-avatar.png';
+  if(!S.contactHeading)S.contactHeading='Join the Studio';
+  if(!S.contactDesc)S.contactDesc='Click below to join the Discord server. Once inside, open a commission ticket or message directly.';
+  if(!S.contactBtn)S.contactBtn='Join Discord Server';
+  if(!S.contactNote)S.contactNote='discord.gg/HtwS9gb54g<br><br>Before commissioning, read the <a href="tos.html">Terms of Service</a> and review <a href="pricing.html">Pricing</a>.';
+  renderAll();
+}
+function renderAll(){renderGallery();renderServices();renderPricing();renderTos();renderSocials();renderContact();renderGeneral();}
+
+function show(name,el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.sb-item').forEach(s=>s.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  el.classList.add('active');
+}
+
+function toast(msg,type='ok'){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className='toast '+type+' show';
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+function esc(v){return String(v||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function toggle(h){h.nextElementSibling.classList.toggle('open');}
+function removeItem(key,i){
+  if(!confirm('Remove?'))return;
+  S[key].splice(i,1);
+  ({gallery:renderGallery,services:renderServices,pricing:renderPricing,tos:renderTos,socials:renderSocials})[key]?.();
+  toast('Removed');
+}
+function addItem(key){
+  const d={
+    gallery:{type:'video',category:'videos',thumbnail:'',full:'',title:'New Item',description:''},
+    services:{icon:'✨',title:'New Service',description:'',features:[]},
+    pricing:{title:'New Tier',price:'$0',popular:false,features:[]},
+    tos:{title:(S.tos.length+1)+'. New Section',body:''},
+    socials:{label:'New Link',icon:'discord',url:'https://'}
+  };
+  S[key].push(d[key]);
+  ({gallery:renderGallery,services:renderServices,pricing:renderPricing,tos:renderTos,socials:renderSocials})[key]?.();
+  toast('Added');
+}
+
+// ── YOUTUBE HELPERS ───────────────────────────────────────────
+function ytIdFromUrl(url){
+  if(!url)return null;
+  const m=url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/))([a-zA-Z0-9_-]{11})/);
+  return m?m[1]:null;
+}
+function isYT(url){return!!ytIdFromUrl(url);}
+
+// ── PASTE HELPER ─────────────────────────────────────────────
+async function pasteInto(id, onPaste){
+  try{
+    const text = await navigator.clipboard.readText();
+    const el = document.getElementById(id);
+    if(el){ el.value = text; el.dispatchEvent(new Event('input')); }
+    if(onPaste) onPaste(text);
+    toast('Pasted ✓');
+  } catch(e) { toast('Allow clipboard access first','err'); }
+}
+
+// ── GALLERY ───────────────────────────────────────────────────
+function renderGallery(){
+  document.getElementById('list-gallery').innerHTML=S.gallery.map((item,i)=>{
+    const isImage=item.type==='image';
+    const ytId=ytIdFromUrl(item.full);
+    const thumbVal=item.thumbnail&&!item.thumbnail.startsWith('data:')?item.thumbnail:'';
+    return `
+    <div class="item">
+      <div class="item-head" onclick="toggle(this)">
+        <strong>${esc(item.title)||'Untitled'}</strong>
+        <div class="item-meta">
+          <span class="tag tag-${isImage?'i':'v'}">${item.type}</span>
+          <span class="tag tag-v">${item.category}</span>
+          <button class="btn-d" onclick="event.stopPropagation();removeItem('gallery',${i})">Remove</button>
+        </div>
+      </div>
+      <div class="item-body">
+        <div class="row2">
+          <div class="field"><label>Title</label>
+            <input type="text" value="${esc(item.title)}" oninput="S.gallery[${i}].title=this.value"></div>
+          <div class="field"><label>Category</label>
+            <select onchange="S.gallery[${i}].category=this.value">
+              <option ${item.category==='videos'?'selected':''}>videos</option>
+              <option ${item.category==='renders'?'selected':''}>renders</option>
+              <option ${item.category==='rigs'?'selected':''}>rigs</option>
+            </select></div>
+        </div>
+        <div class="field"><label>Type</label>
+          <select onchange="S.gallery[${i}].type=this.value;renderGallery()">
+            <option ${item.type==='video'?'selected':''}>video</option>
+            <option ${item.type==='image'?'selected':''}>image</option>
+          </select></div>
+
+        ${isImage?`
+          <div class="field"><label>Image URL or path</label>
+            <div class="input-with-paste">
+              <input type="url" id="img-full-${i}" value="${esc(item.full)}" placeholder="assets/images/work.jpg or https://..."
+                oninput="S.gallery[${i}].full=this.value;S.gallery[${i}].thumbnail=this.value;updateThumbPrev(${i},this.value)">
+              <button class="btn-paste" onclick="pasteInto('img-full-${i}',v=>{S.gallery[${i}].full=v;S.gallery[${i}].thumbnail=v;updateThumbPrev(${i},v);})">📋 Paste</button>
+            </div></div>
+          <div class="field"><label>Preview</label>
+            <img id="thumb-prev-${i}" class="thumb-prev ${item.full?'show':''}"
+              src="${esc(item.full)}" style="width:100%;height:80px;" onerror="this.classList.remove('show')"></div>
+        `:`
+          <div class="field"><label>Video Source</label>
+            <div class="vid-tabs">
+              <button class="vid-tab ${!ytId?'active':''}" onclick="setVidTab(${i},'local',this)">📁 Upload / Local</button>
+              <button class="vid-tab ${ytId?'active':''}" onclick="setVidTab(${i},'yt',this)">▶ YouTube URL</button>
+            </div>
+            <div id="vid-local-${i}" style="display:${ytId?'none':'block'}">
+              <div class="input-with-paste">
+                <input type="url" id="vid-local-input-${i}" value="${ytId?'':esc(item.full)}" placeholder="assets/videos/clip.mp4 or https://..."
+                  oninput="S.gallery[${i}].full=this.value">
+                <button class="btn-paste" onclick="pasteInto('vid-local-input-${i}',v=>S.gallery[${i}].full=v)">📋 Paste</button>
+              </div>
+            </div>
+            <div id="vid-yt-${i}" style="display:${ytId?'block':'none'}">
+              <div class="input-with-paste">
+                <input type="url" id="vid-yt-input-${i}" value="${ytId?esc(item.full):''}" placeholder="https://www.youtube.com/watch?v=... or youtu.be/..."
+                  oninput="S.gallery[${i}].full=this.value;onYTChange(this,${i})">
+                <button class="btn-paste" onclick="pasteInto('vid-yt-input-${i}',v=>{S.gallery[${i}].full=v;onYTChange({value:v},${i});})">📋 Paste</button>
+              </div>
+              ${ytId?`<p style="font-size:0.74rem;color:var(--green);margin-top:5px;">✓ Thumbnail auto-filled</p>`:''}
+            </div>
+          </div>
+          <div class="field">
+            <label>Thumbnail ${ytId?'<span style="color:var(--green);font-weight:400;text-transform:none;letter-spacing:0;">— auto from YouTube</span>':''}</label>
+            <div class="input-with-paste">
+              <input type="url" id="thumb-input-${i}" value="${thumbVal}"
+                placeholder="${ytId?'Auto-filled from YouTube':'Paste image path or URL'}"
+                oninput="S.gallery[${i}].thumbnail=this.value;updateThumbPrev(${i},this.value)">
+              <button class="btn-paste" onclick="pasteInto('thumb-input-${i}',v=>{S.gallery[${i}].thumbnail=v;updateThumbPrev(${i},v);})">📋 Paste</button>
+              <img id="thumb-prev-${i}" class="thumb-prev ${item.thumbnail&&!item.thumbnail.startsWith('data:')?'show':''}"
+                src="${thumbVal}" onerror="this.classList.remove('show')">
+            </div>
+          </div>
+        `}
+        <div class="field"><label>Description (multi-line supported)</label>
+          <textarea rows="4" oninput="S.gallery[${i}].description=this.value">${esc(item.description)}</textarea></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function setVidTab(i,tab,btn){
+  document.querySelectorAll(`#vid-local-${i},#vid-yt-${i}`).forEach(el=>el.style.display='none');
+  document.getElementById(`vid-${tab==='yt'?'yt':'local'}-${i}`).style.display='block';
+  btn.closest('.vid-tabs').querySelectorAll('.vid-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function onYTChange(input,i){
+  S.gallery[i].full=input.value;
+  const id=ytIdFromUrl(input.value);
+  if(id){
+    const thumb=`https://img.youtube.com/vi/${id}/maxresdefault.jpg`;
+    S.gallery[i].thumbnail=thumb;
+    const ti=document.getElementById(`thumb-input-${i}`);
+    const tp=document.getElementById(`thumb-prev-${i}`);
+    if(ti)ti.value=thumb;
+    if(tp){tp.src=thumb;tp.classList.add('show');}
+    toast('YouTube thumbnail auto-filled ✓');
+  }
+}
+
+function updateThumbPrev(i,url){
+  const prev=document.getElementById(`thumb-prev-${i}`);
+  if(prev&&url&&!url.startsWith('data:')){prev.src=url;prev.classList.add('show');}
+}
+
+// ── SERVICES ──────────────────────────────────────────────────
+function renderServices(){
+  document.getElementById('list-services').innerHTML=S.services.map((s,i)=>`
+    <div class="item">
+      <div class="item-head" onclick="toggle(this)">
+        <strong>${esc(s.icon)} ${esc(s.title)}</strong>
+        <button class="btn-d" onclick="event.stopPropagation();removeItem('services',${i})">Remove</button>
+      </div>
+      <div class="item-body">
+        <div class="row2">
+          <div class="field"><label>Icon</label><input type="text" value="${esc(s.icon)}" oninput="S.services[${i}].icon=this.value"></div>
+          <div class="field"><label>Title</label><input type="text" value="${esc(s.title)}" oninput="S.services[${i}].title=this.value"></div>
+        </div>
+        <div class="field"><label>Description</label><textarea rows="3" oninput="S.services[${i}].description=this.value">${esc(s.description)}</textarea></div>
+        <div class="field"><label>Features (one per line)</label><textarea rows="4" oninput="S.services[${i}].features=this.value.split('\\n').filter(Boolean)">${(s.features||[]).join('\n')}</textarea></div>
+      </div>
+    </div>`).join('');
+}
+
+// ── PRICING ───────────────────────────────────────────────────
+function renderPricing(){
+  document.getElementById('list-pricing').innerHTML=S.pricing.map((p,i)=>`
+    <div class="item">
+      <div class="item-head" onclick="toggle(this)">
+        <strong>${esc(p.title)} — ${esc(p.price)}</strong>
+        <div class="item-meta">
+          ${p.popular?'<span class="tag tag-pop">Popular</span>':''}
+          <button class="btn-d" onclick="event.stopPropagation();removeItem('pricing',${i})">Remove</button>
+        </div>
+      </div>
+      <div class="item-body">
+        <div class="row2">
+          <div class="field"><label>Title</label><input type="text" value="${esc(p.title)}" oninput="S.pricing[${i}].title=this.value"></div>
+          <div class="field"><label>Price</label><input type="text" value="${esc(p.price)}" oninput="S.pricing[${i}].price=this.value"></div>
+        </div>
+        <div class="field"><label>Popular?</label>
+          <select onchange="S.pricing[${i}].popular=this.value==='true'">
+            <option value="false" ${!p.popular?'selected':''}>No</option>
+            <option value="true" ${p.popular?'selected':''}>Yes</option>
+          </select></div>
+        <div class="field"><label>Features (one per line)</label><textarea rows="4" oninput="S.pricing[${i}].features=this.value.split('\\n').filter(Boolean)">${(p.features||[]).join('\n')}</textarea></div>
+      </div>
+    </div>`).join('');
+}
+
+// ── TOS ───────────────────────────────────────────────────────
+function renderTos(){
+  document.getElementById('tos-intro').value=S.tosIntro||'';
+  document.getElementById('list-tos').innerHTML=S.tos.map((s,i)=>`
+    <div class="item">
+      <div class="item-head" onclick="toggle(this)">
+        <strong>${esc(s.title)}</strong>
+        <button class="btn-d" onclick="event.stopPropagation();removeItem('tos',${i})">Remove</button>
+      </div>
+      <div class="item-body">
+        <div class="field"><label>Title</label><input type="text" value="${esc(s.title)}" oninput="S.tos[${i}].title=this.value"></div>
+        <div class="field"><label>Body</label><textarea rows="5" oninput="S.tos[${i}].body=this.value">${esc(s.body)}</textarea></div>
+      </div>
+    </div>`).join('');
+}
+
+// ── SOCIALS ───────────────────────────────────────────────────
+function renderSocials(){
+  const KEYS=['yt','x','ig','bsky','patreon','discord'];
+  document.getElementById('list-socials').innerHTML=S.socials.map((s,i)=>`
+    <div class="item">
+      <div class="item-head" onclick="toggle(this)">
+        <strong>${esc(s.label)}</strong>
+        <div class="item-meta">
+          <span class="tag tag-v">${esc(s.icon)}</span>
+          <button class="btn-d" onclick="event.stopPropagation();removeItem('socials',${i})">Remove</button>
+        </div>
+      </div>
+      <div class="item-body">
+        <div class="row2">
+          <div class="field"><label>Label</label><input type="text" value="${esc(s.label)}" oninput="S.socials[${i}].label=this.value"></div>
+          <div class="field"><label>Icon</label>
+            <select onchange="S.socials[${i}].icon=this.value">
+              ${KEYS.map(k=>`<option ${s.icon===k?'selected':''}>${k}</option>`).join('')}
+            </select></div>
+        </div>
+        <div class="field"><label>URL</label><input type="url" value="${esc(s.url)}" oninput="S.socials[${i}].url=this.value"></div>
+      </div>
+    </div>`).join('');
+}
+
+// ── CONTACT ───────────────────────────────────────────────────
+function renderContact(){
+  const av=document.getElementById('c-avatar');
+  const prev=document.getElementById('c-avatar-prev');
+  av.value=S.contactAvatar||'';
+  if(S.contactAvatar){prev.src=S.contactAvatar;prev.classList.add('show');}
+  av.oninput=e=>{S.contactAvatar=e.target.value;prev.src=e.target.value;prev.classList.add('show');};
+  document.getElementById('c-heading').value=S.contactHeading||'';
+  document.getElementById('c-desc').value=S.contactDesc||'';
+  document.getElementById('c-btn').value=S.contactBtn||'';
+  document.getElementById('c-note').value=S.contactNote||'';
+  document.getElementById('c-heading').oninput=e=>S.contactHeading=e.target.value;
+  document.getElementById('c-desc').oninput=e=>S.contactDesc=e.target.value;
+  document.getElementById('c-btn').oninput=e=>S.contactBtn=e.target.value;
+  document.getElementById('c-note').oninput=e=>S.contactNote=e.target.value;
+}
+
+// ── GENERAL ───────────────────────────────────────────────────
+function renderGeneral(){
+  document.getElementById('g-name').value=S.name||'';
+  document.getElementById('g-tagline').value=S.tagline||'';
+  document.getElementById('g-hero').value=S.heroTitle||'';
+  document.getElementById('g-sub').value=S.heroSub||'';
+  document.getElementById('g-cta1').value=S.heroCta1||'';
+  document.getElementById('g-cta2').value=S.heroCta2||'';
+  document.getElementById('g-discord').value=S.discordUrl||'';
+  document.getElementById('g-dcode').value=S.discordCode||'';
+  document.getElementById('g-name').oninput=e=>S.name=e.target.value;
+  document.getElementById('g-tagline').oninput=e=>S.tagline=e.target.value;
+  document.getElementById('g-hero').oninput=e=>S.heroTitle=e.target.value;
+  document.getElementById('g-sub').oninput=e=>S.heroSub=e.target.value;
+  document.getElementById('g-cta1').oninput=e=>S.heroCta1=e.target.value;
+  document.getElementById('g-cta2').oninput=e=>S.heroCta2=e.target.value;
+  document.getElementById('g-discord').oninput=e=>S.discordUrl=e.target.value;
+  document.getElementById('g-dcode').oninput=e=>S.discordCode=e.target.value;
+}
+
+// ── GITHUB UPLOAD ─────────────────────────────────────────────
+const GH_U='ea_gh_user',GH_R='ea_gh_repo',GH_T='ea_gh_token';
+function loadGHSettings(){
+  const u=localStorage.getItem(GH_U),r=localStorage.getItem(GH_R),t=localStorage.getItem(GH_T);
+  if(u)document.getElementById('gh-user').value=u;
+  if(r)document.getElementById('gh-repo').value=r;
+  if(t)document.getElementById('gh-token').value=t;
+  if(u&&r&&t)document.getElementById('gh-badge').style.display='inline-block';
+}
+function saveGH(){
+  const u=document.getElementById('gh-user').value.trim();
+  const r=document.getElementById('gh-repo').value.trim();
+  const t=document.getElementById('gh-token').value.trim();
+  if(!u||!r||!t){ghSt('Fill in all three fields.','err');return;}
+  localStorage.setItem(GH_U,u);localStorage.setItem(GH_R,r);localStorage.setItem(GH_T,t);
+  document.getElementById('gh-badge').style.display='inline-block';
+  toast('GitHub settings saved ✓');
+}
+async function testGH(){
+  const u=localStorage.getItem(GH_U),r=localStorage.getItem(GH_R),t=localStorage.getItem(GH_T);
+  if(!u||!r||!t){ghSt('Save settings first.','err');return;}
+  ghSt('Testing...','loading');
+  try{
+    const res=await fetch(`https://api.github.com/repos/${u}/${r}`,
+      {headers:{Authorization:`token ${t}`,Accept:'application/vnd.github.v3+json'}});
+    if(res.ok)ghSt('✅ Connected to '+u+'/'+r,'ok');
+    else ghSt('❌ Failed ('+res.status+'). Check token and repo name.','err');
+  }catch(e){ghSt('❌ '+e.message,'err');}
+}
+function ghSt(msg,type){const el=document.getElementById('gh-status');el.textContent=msg;el.className='gh-status '+type;}
+
+let uploadFile=null;
+function onFileSelect(input){
+  const file=input.files[0];if(!file)return;
+  uploadFile=file;
+  const fr=new FileReader();
+  fr.onload=e=>{
+    document.getElementById('upload-preview').src=e.target.result;
+    document.getElementById('upload-preview-wrap').style.display='block';
+    document.getElementById('upload-info').textContent=file.name+' — '+(file.size/1024).toFixed(1)+' KB';
+    if(!document.getElementById('upload-name').value)document.getElementById('upload-name').value=file.name;
+  };
+  fr.readAsDataURL(file);
+}
+async function uploadToGH(){
+  const u=localStorage.getItem(GH_U),r=localStorage.getItem(GH_R),t=localStorage.getItem(GH_T);
+  if(!u||!r||!t){upSt('Save GitHub settings first.','err');return;}
+  if(!uploadFile){upSt('Pick a file first.','err');return;}
+  const fn=(document.getElementById('upload-name').value.trim()||uploadFile.name).replace(/[^a-zA-Z0-9._-]/g,'_');
+  const path=`assets/images/${fn}`;
+  upSt('Uploading...','loading');
+  const b64=await new Promise((res,rej)=>{const fr=new FileReader();fr.onload=()=>res(fr.result.split(',')[1]);fr.onerror=rej;fr.readAsDataURL(uploadFile);});
+  let sha=null;
+  try{const c=await fetch(`https://api.github.com/repos/${u}/${r}/contents/${path}`,{headers:{Authorization:`token ${t}`,Accept:'application/vnd.github.v3+json'}});if(c.ok){const d=await c.json();sha=d.sha;}}catch(e){}
+  try{
+    const body={message:`Upload ${fn} via admin panel`,content:b64};
+    if(sha)body.sha=sha;
+    const res=await fetch(`https://api.github.com/repos/${u}/${r}/contents/${path}`,{
+      method:'PUT',
+      headers:{Authorization:`token ${t}`,Accept:'application/vnd.github.v3+json','Content-Type':'application/json'},
+      body:JSON.stringify(body)
+    });
+    if(res.ok){
+      upSt('','ok');
+      document.getElementById('upload-path').textContent=path;
+      document.getElementById('upload-result').classList.add('show');
+      toast('✅ Uploaded to GitHub!');
+    }else{const err=await res.json();upSt('❌ '+(err.message||res.status),'err');}
+  }catch(e){upSt('❌ '+e.message,'err');}
+}
+function upSt(msg,type){const el=document.getElementById('upload-status');el.textContent=msg;el.className='gh-status'+(msg?' '+type:'');}
+function copyPath(){navigator.clipboard.writeText(document.getElementById('upload-path').textContent).then(()=>toast('Path copied!'));}
+function clearUpload(){
+  uploadFile=null;
+  document.getElementById('upload-file').value='';
+  document.getElementById('upload-preview-wrap').style.display='none';
+  document.getElementById('upload-name').value='';
+  document.getElementById('upload-result').classList.remove('show');
+  upSt('','ok');
+}
+const dz=document.getElementById('upload-drop');
+if(dz){
+  dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('drag');});
+  dz.addEventListener('dragleave',()=>dz.classList.remove('drag'));
+  dz.addEventListener('drop',e=>{
+    e.preventDefault();dz.classList.remove('drag');
+    const f=e.dataTransfer.files[0];
+    if(f&&f.type.startsWith('image/')){uploadFile=f;onFileSelect({files:[f]});}
+  });
+}
+
+// ── DOWNLOAD ──────────────────────────────────────────────────
+function dlContent(){
+  S.tosIntro=document.getElementById('tos-intro').value;
+  const out=`const SITE = ${JSON.stringify(S,null,2)};\n`;
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([out],{type:'text/javascript'}));
+  a.download='content.js';a.click();
+  toast('✅ content.js downloaded!');
+}
+</script>
+</body>
+</html>
