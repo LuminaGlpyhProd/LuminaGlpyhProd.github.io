@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact | Evelyn Animation</title>
+  <link rel="stylesheet" href="site.css">
+</head>
+<body>
+
+<div id="cursor"></div>
+<nav id="nav"></nav>
+
+<div class="page-hero">
+  <h1>Hire Me</h1>
+  <p>All commissions are handled exclusively through Discord.</p>
+</div>
+
+<div class="section">
+  <div class="contact-box">
+    <div class="discord-logo">
+      <img id="contact-avatar" src="" alt="Discord Server">
+    </div>
+    <h3 id="contact-heading"></h3>
+    <p id="contact-desc"></p>
+    <a id="contact-btn" href="" target="_blank" rel="noopener noreferrer"
+       class="btn btn-accent" style="display:block;width:100%;text-align:center;"></a>
+    <p class="contact-note" id="contact-note"></p>
+    <p class="contact-socials-title">Also find me on</p>
+    <div id="contact-socials"></div>
+  </div>
+</div>
+
+<footer id="footer"></footer>
+
+<script src="content.js"></script>
+<script src="site.js"></script>
+<script>
+  initCursor();
+  buildNav('contact.html');
+  buildFooter();
+  buildContactSocials();
+  document.getElementById('contact-avatar').src         = SITE.contactAvatar || 'https://cdn.discordapp.com/icons/1107261795774758942/a_86903e068270509a259929849200844c.png?size=256';
+  document.getElementById('contact-heading').textContent = SITE.contactHeading || 'Join the Studio';
+  document.getElementById('contact-desc').textContent    = SITE.contactDesc    || '';
+  document.getElementById('contact-btn').textContent     = SITE.contactBtn     || 'Join Discord Server';
+  document.getElementById('contact-btn').href            = SITE.discordUrl;
+  document.getElementById('contact-note').innerHTML      = SITE.contactNote    || '';
+</script>
+</body>
+</html>
