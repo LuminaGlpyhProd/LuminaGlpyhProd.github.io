@@ -1,8 +1,8 @@
 const SITE = {
   "name": "Evelyn Animation",
-  "tagline": "High-end Minecraft cinematics & custom rigs.",
-  "heroTitle": "Motion. Redefined.",
-  "heroSub": "High-end 3D environments, custom Minecraft rigs, and immersive motion graphics for the world's most creative brands.",
+  "tagline": "3D High End Animation Cinematics, Visual story telling",
+  "heroTitle": "You ask, We Create",
+  "heroSub": "High-end 3D environments, custom rigs, and immersive animation for the world's most creative brands.",
   "discordUrl": "https://discord.com/invite/HtwS9gb54g",
   "discordCode": "discord.gg/HtwS9gb54g",
   "contactAvatar": "assets/images/discord-avatar.png",
@@ -17,11 +17,6 @@ const SITE = {
       "label": "YouTube",
       "icon": "yt",
       "url": "https://www.youtube.com/@EvelynAnims"
-    },
-    {
-      "label": "Alt YouTube",
-      "icon": "yt",
-      "url": "https://www.youtube.com/@ThoqriMC"
     },
     {
       "label": "X / Twitter",
@@ -49,107 +44,68 @@ const SITE = {
       "url": "https://discord.com/invite/HtwS9gb54g"
     }
   ],
-  "gallery": [
-    {
-      "type": "youtube",
-      "category": "videos",
-      "thumbnail": "https://img.youtube.com/vi/qo9EVm2-JMo/maxresdefault.jpg",
-      "full": "https://www.youtube.com/embed/qo9EVm2-JMo?autoplay=1",
-      "title": "TalonMC | Skyblock Trailer",
-      "description": "Animation: 1:33 - 1:36\nLighting: 1:33 - 1:36"
-    },
-    {
-      "type": "image",
-      "category": "renders",
-      "thumbnail": "https://images.unsplash.com/photo-1614850523296-d8c1af93d400?w=800",
-      "full": "https://images.unsplash.com/photo-1614850523296-d8c1af93d400?w=1400",
-      "title": "iBlocky Server Trailer",
-      "description": "Full cinematic environment for the iBlocky community. Advanced landscape generation and custom atmospheric lighting to create a Neon District aesthetic."
-    },
-    {
-      "type": "video",
-      "category": "videos",
-      "thumbnail": "",
-      "full": "https://www.w3schools.com/html/mov_bbb.mp4",
-      "title": "Character Reel 2026",
-      "description": "A compilation of recent animations focusing on high-end facial rigging. Blender rigging techniques and real-time Eevee performance tests for modern character design."
-    },
-    {
-      "type": "image",
-      "category": "rigs",
-      "thumbnail": "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800",
-      "full": "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=1400",
-      "title": "Ice Cube v3.1 Demo",
-      "description": "The latest iteration of our flagship rigging system. Automatic lip-sync, bendy bones, and a custom UI panel for animators to streamline their workflow."
-    }
-  ],
+  "gallery": [],
   "services": [
     {
-      "icon": "🧊",
-      "title": "Rigging",
-      "description": "Professional Minecraft rigs with advanced facial automation, intuitive UI panels, and high-performance bendy bones for maximum expression.",
-      "features": [
-        "Automatic lip-sync systems",
-        "Custom UI controller panels",
-        "Bendy bones & shape keys",
-        "Export-ready for Blender & C4D"
-      ]
-    },
-    {
       "icon": "🎬",
-      "title": "Motion",
-      "description": "High-energy cinematic trailers, kinetic typography, and immersive storytelling designed to captivate and convert your audience instantly.",
+      "title": "Animation",
+      "description": "Cinematic Storytelling, Trailer Animations. We Offer Both Mine imator & Blender Animations",
       "features": [
         "4K server & game trailers",
-        "Kinetic typography sequences",
         "Storyboard-to-final production",
         "Multi-platform delivery formats"
       ]
     },
     {
-      "icon": "☁️",
-      "title": "VFX",
-      "description": "Custom lighting setups, volumetric atmospheric effects, and professional post-processing that turns blocky scenes into cinematic masterpieces.",
+      "icon": "✨",
+      "title": "3D Render/Image",
+      "description": "3D Render is a still image of a specific shot of your liking, for example: a thumbnail for a YouTube channel, a banner, a profile picture, or wallpapers.",
       "features": [
-        "Volumetric fog & god rays",
-        "HDR lighting & tone mapping",
-        "Particle & fluid simulations",
-        "Color grading & compositing"
+        "4K Full Rendered Image of your request",
+        "4k Wallpaper"
       ]
     }
   ],
   "pricing": [
     {
-      "title": "Starter",
-      "price": "$199",
+      "title": "Budget Animation Pack",
+      "price": "$3 Per Second",
       "popular": false,
       "features": [
-        "1 Basic Custom Rig",
-        "720p Social Media Render",
-        "3 Rounds of Revisions",
-        "Commercial Usage License"
+        "1080p Resolution Render",
+        "3 Rounds of Revisions"
       ]
     },
     {
-      "title": "Pro",
-      "price": "$499",
-      "popular": true,
+      "title": "Medium Animation Pack",
+      "price": "$10 Per Second",
+      "popular": false,
       "features": [
-        "3 Advanced Dynamic Rigs",
         "Full 4K Cinema Render",
         "Unlimited Revision Cycles",
         "Project Source Files Included"
       ]
     },
     {
-      "title": "Custom",
+      "title": "Custom Animation Pack",
       "price": "$$$",
-      "popular": false,
+      "popular": true,
       "features": [
         "Full Animation Pipeline",
         "Dedicated Project Support",
         "Full Intellectual Rights",
         "Priority Scheduling"
+      ]
+    },
+    {
+      "title": "3D Render/Image Pack",
+      "price": "$15/negotiable ",
+      "popular": false,
+      "features": [
+        "4K Full Rendered Image of your request",
+        "4k Wallpaper",
+        "YouTube Banner",
+        "Profile Pictures"
       ]
     }
   ],
