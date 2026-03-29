@@ -80,8 +80,8 @@ const SITE = {
     {
       "type": "video",
       "category": "videos",
-      "thumbnail": "https://img.youtube.com/vi/SZm4qLLLzfk/maxresdefault.jpg",
-      "full": "https://www.youtube.com/watch?v=SZm4qLLLzfk&pp=ygUGYWV0aGVy0gcJCdsKAYcqIYzv",
+      "thumbnail": "https://i.ytimg.com/vi/SZm4qLLLzfk/sddefault.jpg",
+      "full": "https://youtu.be/SZm4qLLLzfk?si=c6rlyRgUxRdBJusN",
       "title": "Aether - A Minecraft Parody",
       "description": "Animation: 2:45 - 2:48 "
     },
@@ -120,8 +120,8 @@ const SITE = {
     {
       "type": "video",
       "category": "rigs",
-      "thumbnail": "",
-      "full": "https://youtu.be/ubQ3eWlOgHI",
+      "thumbnail": "https://img.youtube.com/vi/gyabXyZielE/maxresdefault.jpg",
+      "full": "https://www.youtube.com/watch?v=gyabXyZielE",
       "title": "Chair Model",
       "description": ""
     }
