@@ -11,7 +11,7 @@ const SITE = {
   "contactBtn": "Join Discord Server",
   "contactNote": "discord.gg/HtwS9gb54g<br><br>Before commissioning, read the <a href=\"tos.html\">Terms of Service</a> and review <a href=\"pricing.html\">Pricing</a>.",
   "heroCta1": "View Portfolio",
-  "heroCta2": "Hire Me",
+  "heroCta2": "Hire Us",
   "socials": [
     {
       "label": "YouTube",
@@ -81,7 +81,7 @@ const SITE = {
       "type": "video",
       "category": "videos",
       "thumbnail": "https://img.youtube.com/vi/SZm4qLLLzfk/maxresdefault.jpg",
-      "full": "https://www.youtube.com/watch?v=SZm4qLLLzfk",
+      "full": "https://www.youtube.com/watch?v=SZm4qLLLzfk&pp=ygUGYWV0aGVy0gcJCdsKAYcqIYzv",
       "title": "Aether - A Minecraft Parody",
       "description": "Animation: 2:45 - 2:48 "
     },
@@ -116,6 +116,14 @@ const SITE = {
       "full": "https://x.com/evelynanims/status/2036732790159622424",
       "title": "Aftermath fanart",
       "description": ""
+    },
+    {
+      "type": "video",
+      "category": "rigs",
+      "thumbnail": "",
+      "full": "https://youtu.be/ubQ3eWlOgHI",
+      "title": "Chair Model",
+      "description": ""
     }
   ],
   "services": [
@@ -136,6 +144,17 @@ const SITE = {
       "features": [
         "4K Full Rendered Image of your request",
         "4k Wallpaper"
+      ]
+    },
+    {
+      "icon": "🤖",
+      "title": "Modelling & Rigging",
+      "description": "We use the program \"Blender\" to model and rig!\nIt is a semi-low-poly model with a fresh, state-of-the-art rig.",
+      "features": [
+        "Blender Rig",
+        "Modelling",
+        "Semi Low-poly Model",
+        "Stylized Models"
       ]
     }
   ],
@@ -179,6 +198,24 @@ const SITE = {
         "4k Wallpaper",
         "YouTube Banner",
         "Profile Pictures"
+      ]
+    },
+    {
+      "title": "Modelling",
+      "price": "$60",
+      "popular": false,
+      "features": [
+        "Stylized Model",
+        "Furniture",
+        "Characters"
+      ]
+    },
+    {
+      "title": "Rigging",
+      "price": "$25",
+      "popular": false,
+      "features": [
+        "Character RIgging"
       ]
     }
   ],
