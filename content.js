@@ -44,7 +44,80 @@ const SITE = {
       "url": "https://discord.com/invite/HtwS9gb54g"
     }
   ],
-  "gallery": [],
+  "gallery": [
+    {
+      "type": "video",
+      "category": "videos",
+      "thumbnail": "https://img.youtube.com/vi/Fn_eT5rLWpY/maxresdefault.jpg",
+      "full": "https://www.youtube.com/watch?v=Fn_eT5rLWpY",
+      "title": "iBlocky - THE RETURN OF PRISON",
+      "description": "iBlocky - THE RETURN OF PRISON | Animation: 0:59 - 1:01 "
+    },
+    {
+      "type": "video",
+      "category": "videos",
+      "thumbnail": "https://img.youtube.com/vi/IMMIUrtS1ZE/maxresdefault.jpg",
+      "full": "https://www.youtube.com/watch?v=IMMIUrtS1ZE",
+      "title": "iShowSpeed Minecraft Server (Official Trailer)",
+      "description": "Animation: 1:15 - 1:23 & 1:29 - 1:35"
+    },
+    {
+      "type": "video",
+      "category": "videos",
+      "thumbnail": "https://img.youtube.com/vi/W8fVGFRFcHI/maxresdefault.jpg",
+      "full": "https://www.youtube.com/watch?v=W8fVGFRFcHI",
+      "title": "TalonMC Official Prison Season 2 Trailer | #1 Minecraft Prison Server",
+      "description": "Lighting: 0:00 - 0:46"
+    },
+    {
+      "type": "video",
+      "category": "videos",
+      "thumbnail": "https://img.youtube.com/vi/_57mvYQCUPY/maxresdefault.jpg",
+      "full": "https://www.youtube.com/watch?v=_57mvYQCUPY",
+      "title": "Minecadia | Factions Valentines Trailer [4K]",
+      "description": "Lighting: 0:19 - 00:36"
+    },
+    {
+      "type": "video",
+      "category": "videos",
+      "thumbnail": "https://img.youtube.com/vi/SZm4qLLLzfk/maxresdefault.jpg",
+      "full": "https://www.youtube.com/watch?v=SZm4qLLLzfk",
+      "title": "Aether - A Minecraft Parody",
+      "description": "Animation: 2:45 - 2:48 "
+    },
+    {
+      "type": "video",
+      "category": "videos",
+      "thumbnail": "https://img.youtube.com/vi/IJ-fqxaA914/maxresdefault.jpg",
+      "full": "https://www.youtube.com/watch?v=IJ-fqxaA914",
+      "title": "The Withering Cinematic: Episode 1 - Part 2",
+      "description": "Animation: 3:36 - 4:40 "
+    },
+    {
+      "type": "video",
+      "category": "videos",
+      "thumbnail": "https://img.youtube.com/vi/LqP2_sO1yCE/maxresdefault.jpg",
+      "full": "https://www.youtube.com/watch?v=LqP2_sO1yCE",
+      "title": "The Withering Cinematic: Episode 1 - Part 3",
+      "description": "Animation: 1:28 - 3:39"
+    },
+    {
+      "type": "image",
+      "category": "renders",
+      "thumbnail": "",
+      "full": "https://x.com/evelynanims/status/2033787358697718069",
+      "title": "Hytale Render 1",
+      "description": ""
+    },
+    {
+      "type": "image",
+      "category": "renders",
+      "thumbnail": "https://x.com/evelynanims/status/2036732790159622424",
+      "full": "https://x.com/evelynanims/status/2036732790159622424",
+      "title": "Aftermath fanart",
+      "description": ""
+    }
+  ],
   "services": [
     {
       "icon": "🎬",
