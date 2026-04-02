@@ -14,12 +14,9 @@
 
 <header class="hero">
   <canvas id="hero-canvas"></canvas>
-  <h1>Motion.<br><em>Redefined.</em></h1>
-  <p>High-end 3D environments, custom Minecraft rigs, and immersive motion graphics for the world's most creative brands.</p>
-  <div class="hero-btns">
-    <a href="work.html" class="btn btn-accent">View Portfolio</a>
-    <a href="contact.html" class="btn btn-white">Hire Me</a>
-  </div>
+  <h1 id="hero-title"></h1>
+  <p id="hero-sub"></p>
+  <div class="hero-btns" id="hero-btns"></div>
 </header>
 
 <div class="section">
@@ -78,6 +75,7 @@
   buildNav('index.html');
   buildFooter();
   buildServices();
+  buildHero();
 
   // ── HERO CANVAS BACKGROUND ─────────────────────────────────
   // GPU-accelerated particle field — similar to motionairy.com

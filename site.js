@@ -114,28 +114,90 @@ function buildFooter() {
     </div>`;
 }
 
+/* ── TWITTER / X HELPERS ──────────────────────────────────── */
+function tweetIdFromUrl(url) {
+  if (!url) return null;
+  const m = url.match(/(?:x\.com|twitter\.com)\/\w+\/status\/(\d+)/);
+  return m ? m[1] : null;
+}
+function isTwitterUrl(url) { return !!tweetIdFromUrl(url); }
+
+// Cache so we never double-fetch the same tweet
+const _tweetCache = {};
+async function fetchTweetMedia(url) {
+  const id = tweetIdFromUrl(url);
+  if (!id) return null;
+  if (_tweetCache[id]) return _tweetCache[id];
+  try {
+    const res = await fetch(`https://api.fxtwitter.com/status/${id}`);
+    if (!res.ok) throw new Error(res.status);
+    const data = await res.json();
+    const tweet = data.tweet;
+    const result = { type: 'image', thumb: null, videoUrl: null, text: tweet?.text || '' };
+    // Check for video/gif
+    const media = tweet?.media;
+    if (media?.videos?.length) {
+      const vid = media.videos[0];
+      // Pick highest quality
+      const best = (vid.variants || []).filter(v => v.content_type === 'video/mp4')
+                     .sort((a,b) => (b.bitrate||0)-(a.bitrate||0))[0];
+      result.type     = 'video';
+      result.videoUrl = best?.url || vid.url;
+      result.thumb    = vid.thumbnail_url || media.photos?.[0]?.url || null;
+    } else if (media?.photos?.length) {
+      result.type  = 'image';
+      result.thumb = media.photos[0].url;
+    }
+    _tweetCache[id] = result;
+    return result;
+  } catch(e) {
+    _tweetCache[id] = null;
+    return null;
+  }
+}
+
 /* ── GALLERY ──────────────────────────────────────────────── */
 function buildGallery() {
   const el = document.getElementById('gallery-grid');
   if (!el) return;
-  el.innerHTML = SITE.gallery.map(item => {
-    const isYT  = item.type === 'youtube' || (item.type === 'video' && isYouTubeUrl(item.full));
-    const isVid = item.type === 'video' && !isYT;
-    const isImg = item.type === 'image';
+
+  el.innerHTML = SITE.gallery.map((item, idx) => {
+    const isYT      = item.type === 'youtube' || (item.type === 'video' && isYouTubeUrl(item.full));
+    const isVid     = item.type === 'video' && !isYT;
+    const isTweet   = isTwitterUrl(item.full);
 
     // Resolve thumbnail
     let thumb = item.thumbnail;
-    if (!thumb && isYT)  thumb = ytThumb(item.full);
-    if (!thumb && isImg) thumb = item.full;
+    if (!thumb && isYT)                          thumb = ytThumb(item.full);
+    if (!thumb && !isTweet && item.type==='image') thumb = item.full;
 
-    // Resolve full src for lightbox
     const fullSrc = isYT ? toYTEmbed(item.full) : item.full;
+    const lbType  = isYT ? 'youtube' : isVid ? 'video' : 'image';
 
+    // ── TWITTER / X card ─────────────────────────────────────
+    if (isTweet) {
+      const cardId = `tweet-card-${idx}`;
+      return `
+      <div class="gallery-card ${item.category} tweet-loading" id="${cardId}" data-tweet-url="${item.full}" data-idx="${idx}">
+        <div class="gallery-thumb">
+          <div class="tweet-skeleton">
+            <span class="tweet-x-logo">${ICONS.x}</span>
+            <span class="tweet-loading-text">Loading post…</span>
+          </div>
+          <div class="twitter-badge" style="display:none">${ICONS.x}</div>
+        </div>
+        <div class="gallery-info" style="display:none">
+          <h4>${item.title}</h4>
+          <p>${renderDesc(item.description)}</p>
+        </div>
+      </div>`;
+    }
+
+    // ── Standard card ─────────────────────────────────────────
     const mediaEl = isVid
       ? `<video muted loop playsinline preload="none" data-full="${fullSrc}"><source src="${item.full}" type="video/mp4"></video>`
-      : `<img src="${thumb}" data-full="${fullSrc}" alt="${item.title}" loading="lazy">`;
-
-    const lbType = isYT ? 'youtube' : isVid ? 'video' : 'image';
+      : `<img src="${thumb || ''}" data-full="${fullSrc}" alt="${item.title}" loading="lazy"
+           ${isYT ? `onerror="ytThumbFallback(this)"` : ''}>`;
 
     return `
       <div class="gallery-card ${item.category}" onclick="openLightbox(this,'${lbType}')">
@@ -149,6 +211,69 @@ function buildGallery() {
         </div>
       </div>`;
   }).join('');
+
+  // Hydrate all tweet cards asynchronously
+  el.querySelectorAll('.tweet-loading').forEach(card => {
+    hydrateTweetCard(card);
+  });
+}
+
+function ytThumbFallback(img) {
+  if (img.src.includes('maxresdefault')) {
+    img.src = img.src.replace('maxresdefault', 'hqdefault');
+  } else if (img.src.includes('hqdefault')) {
+    img.src = img.src.replace('hqdefault', 'mqdefault');
+  }
+}
+
+async function hydrateTweetCard(card) {
+  const url   = card.dataset.tweetUrl;
+  const media = await fetchTweetMedia(url);
+  const thumb = card.querySelector('.gallery-thumb');
+  const badge = card.querySelector('.twitter-badge');
+  badge.style.display = '';
+
+  if (!media) {
+    // Fallback: open link directly
+    thumb.innerHTML = `
+      <div class="tweet-skeleton tweet-skeleton--error">
+        ${ICONS.x}
+        <span>View on X</span>
+      </div>`;
+    card.style.cursor = 'pointer';
+    card.onclick = () => window.open(url, '_blank', 'noopener');
+    card.classList.remove('tweet-loading');
+    return;
+  }
+
+  card.classList.remove('tweet-loading');
+
+  if (media.type === 'video' && media.videoUrl) {
+    // Treat like a regular video in lightbox
+    thumb.innerHTML = `
+      ${media.thumb ? `<img src="${media.thumb}" data-full="${media.videoUrl}" alt="${card.querySelector('h4').textContent}" loading="lazy">` : ''}
+      <div class="play-badge"><svg viewBox="0 0 24 24" fill="white" width="16" height="16"><path d="M8 5v14l11-7z"/></svg></div>
+      <div class="twitter-badge">${ICONS.x}</div>`;
+    card.onclick = () => openLightbox(card, 'video');
+    // patch data-full for openLightbox
+    const img = thumb.querySelector('img');
+    if (img) img.setAttribute('data-full', media.videoUrl);
+  } else if (media.thumb) {
+    // Image post
+    thumb.innerHTML = `
+      <img src="${media.thumb}" data-full="${media.thumb}" alt="${card.querySelector('h4').textContent}" loading="lazy">
+      <div class="twitter-badge">${ICONS.x}</div>`;
+    card.onclick = () => openLightbox(card, 'image');
+  } else {
+    // No media found, open link
+    thumb.innerHTML = `
+      <div class="tweet-skeleton">
+        ${ICONS.x}
+        <span>View on X</span>
+      </div>
+      <div class="twitter-badge">${ICONS.x}</div>`;
+    card.onclick = () => window.open(url, '_blank', 'noopener');
+  }
 }
 
 /* ── GALLERY FILTER ───────────────────────────────────────── */
@@ -214,6 +339,18 @@ function closeLightbox() {
   lb.classList.remove('open');
   if (media) media.innerHTML = '';
   document.body.style.overflow = '';
+}
+
+/* ── HERO ──────────────────────────────────────────────────── */
+function buildHero() {
+  const title = document.getElementById('hero-title');
+  const sub   = document.getElementById('hero-sub');
+  const btns  = document.getElementById('hero-btns');
+  if (title) title.innerHTML = SITE.heroTitle || 'You ask, We Create';
+  if (sub)   sub.textContent  = SITE.heroSub   || '';
+  if (btns)  btns.innerHTML   = `
+    <a href="work.html"    class="btn btn-accent">${SITE.heroCta1 || 'View Portfolio'}</a>
+    <a href="contact.html" class="btn btn-white">${SITE.heroCta2  || 'Hire Us'}</a>`;
 }
 
 /* ── SERVICES ─────────────────────────────────────────────── */

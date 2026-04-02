@@ -112,10 +112,16 @@
 
     /* ITEMS */
     .item-list{display:flex;flex-direction:column;gap:8px;}
-    .item{background:var(--s2);border:1px solid var(--border);border-radius:12px;}
+    .item{background:var(--s2);border:1px solid var(--border);border-radius:12px;transition:opacity 0.15s,box-shadow 0.15s;}
+    .item.drag-over{box-shadow:0 0 0 2px var(--accent);opacity:0.85;}
+    .item.dragging{opacity:0.35;}
     .item-head{display:flex;justify-content:space-between;align-items:center;
       padding:12px 16px;cursor:pointer;user-select:none;gap:8px;}
     .item-head strong{font-size:0.86rem;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+    .drag-handle{cursor:grab;color:var(--muted);font-size:1rem;padding:0 4px;flex-shrink:0;
+      display:flex;align-items:center;transition:color 0.15s;line-height:1;}
+    .drag-handle:active{cursor:grabbing;}
+    .drag-handle:hover{color:#fff;}
     .item-meta{display:flex;align-items:center;gap:6px;flex-shrink:0;}
     .tag{display:inline-block;padding:2px 8px;border-radius:100px;font-size:0.67rem;font-weight:700;}
     .tag-v{background:rgba(59,130,246,0.15);color:#60a5fa;}
@@ -542,6 +548,50 @@ async function pasteInto(id, onPaste){
   } catch(e) { toast('Allow clipboard access first','err'); }
 }
 
+// ── DRAG-TO-REORDER ───────────────────────────────────────────
+function makeDraggable(listId, key, renderFn) {
+  const list = document.getElementById(listId);
+  if (!list) return;
+  let dragSrc = null;
+
+  list.querySelectorAll('.item').forEach((item, i) => {
+    item.setAttribute('draggable', 'true');
+    item.dataset.idx = i;
+
+    item.addEventListener('dragstart', e => {
+      dragSrc = item;
+      item.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', i);
+    });
+    item.addEventListener('dragend', () => {
+      item.classList.remove('dragging');
+      list.querySelectorAll('.item').forEach(el => el.classList.remove('drag-over'));
+    });
+    item.addEventListener('dragover', e => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      if (item !== dragSrc) {
+        list.querySelectorAll('.item').forEach(el => el.classList.remove('drag-over'));
+        item.classList.add('drag-over');
+      }
+    });
+    item.addEventListener('dragleave', () => item.classList.remove('drag-over'));
+    item.addEventListener('drop', e => {
+      e.preventDefault();
+      item.classList.remove('drag-over');
+      if (!dragSrc || dragSrc === item) return;
+      const from = parseInt(dragSrc.dataset.idx);
+      const to   = parseInt(item.dataset.idx);
+      const arr  = S[key];
+      const [moved] = arr.splice(from, 1);
+      arr.splice(to, 0, moved);
+      renderFn();
+      toast('Order saved ✓');
+    });
+  });
+}
+
 // ── GALLERY ───────────────────────────────────────────────────
 function renderGallery(){
   document.getElementById('list-gallery').innerHTML=S.gallery.map((item,i)=>{
@@ -551,6 +601,7 @@ function renderGallery(){
     return `
     <div class="item">
       <div class="item-head" onclick="toggle(this)">
+        <span class="drag-handle" onclick="event.stopPropagation()" title="Drag to reorder">⠿</span>
         <strong>${esc(item.title)||'Untitled'}</strong>
         <div class="item-meta">
           <span class="tag tag-${isImage?'i':'v'}">${item.type}</span>
@@ -624,6 +675,7 @@ function renderGallery(){
       </div>
     </div>`;
   }).join('');
+  makeDraggable('list-gallery','gallery',renderGallery);
 }
 
 function setVidTab(i,tab,btn){
@@ -669,6 +721,7 @@ function renderServices(){
         <div class="field"><label>Features (one per line)</label><textarea rows="4" oninput="S.services[${i}].features=this.value.split('\\n').filter(Boolean)">${(s.features||[]).join('\n')}</textarea></div>
       </div>
     </div>`).join('');
+  makeDraggable('list-services','services',renderServices);
 }
 
 // ── PRICING ───────────────────────────────────────────────────
@@ -695,6 +748,7 @@ function renderPricing(){
         <div class="field"><label>Features (one per line)</label><textarea rows="4" oninput="S.pricing[${i}].features=this.value.split('\\n').filter(Boolean)">${(p.features||[]).join('\n')}</textarea></div>
       </div>
     </div>`).join('');
+  makeDraggable('list-pricing','pricing',renderPricing);
 }
 
 // ── TOS ───────────────────────────────────────────────────────
@@ -711,6 +765,7 @@ function renderTos(){
         <div class="field"><label>Body</label><textarea rows="5" oninput="S.tos[${i}].body=this.value">${esc(s.body)}</textarea></div>
       </div>
     </div>`).join('');
+  makeDraggable('list-tos','tos',renderTos);
 }
 
 // ── SOCIALS ───────────────────────────────────────────────────
@@ -736,6 +791,7 @@ function renderSocials(){
         <div class="field"><label>URL</label><input type="url" value="${esc(s.url)}" oninput="S.socials[${i}].url=this.value"></div>
       </div>
     </div>`).join('');
+  makeDraggable('list-socials','socials',renderSocials);
 }
 
 // ── CONTACT ───────────────────────────────────────────────────
