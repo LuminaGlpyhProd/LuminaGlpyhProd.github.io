@@ -80,6 +80,14 @@ const SITE = {
     {
       "type": "video",
       "category": "videos",
+      "thumbnail": "https://img.youtube.com/vi/BYyEubSC1TY/maxresdefault.jpg",
+      "full": "https://www.youtube.com/watch?v=BYyEubSC1TY",
+      "title": " Syuu Network Trailer Teaser",
+      "description": "Lighting: Entire Duration"
+    },
+    {
+      "type": "video",
+      "category": "videos",
       "thumbnail": "https://i.ytimg.com/vi/SZm4qLLLzfk/sddefault.jpg",
       "full": "https://youtu.be/SZm4qLLLzfk?si=c6rlyRgUxRdBJusN",
       "title": "Aether - A Minecraft Parody",
@@ -112,6 +120,14 @@ const SITE = {
     {
       "type": "image",
       "category": "renders",
+      "thumbnail": "https://x.com/evelynanims/status/2041554498381050093",
+      "full": "https://x.com/evelynanims/status/2041554498381050093",
+      "title": "MC Server Commission",
+      "description": ""
+    },
+    {
+      "type": "image",
+      "category": "renders",
       "thumbnail": "https://x.com/evelynanims/status/2036732790159622424",
       "full": "https://x.com/evelynanims/status/2036732790159622424",
       "title": "Aftermath fanart",
@@ -124,22 +140,6 @@ const SITE = {
       "full": "https://www.youtube.com/watch?v=gyabXyZielE",
       "title": "Chair Model",
       "description": ""
-    },
-    {
-      "type": "image",
-      "category": "renders",
-      "thumbnail": "https://x.com/evelynanims/status/2041554498381050093",
-      "full": "https://x.com/evelynanims/status/2041554498381050093",
-      "title": "MC Server Commission",
-      "description": ""
-    },
-    {
-      "type": "video",
-      "category": "videos",
-      "thumbnail": "https://img.youtube.com/vi/BYyEubSC1TY/maxresdefault.jpg",
-      "full": "https://www.youtube.com/watch?v=BYyEubSC1TY",
-      "title": " Syuu Network Trailer Teaser",
-      "description": "Lighting: Entire Duration"
     }
   ],
   "services": [
