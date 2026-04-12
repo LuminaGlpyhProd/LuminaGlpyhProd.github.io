@@ -110,6 +110,14 @@ const SITE = {
       "description": "Animation: 1:28 - 3:39"
     },
     {
+      "type": "video",
+      "category": "rigs",
+      "thumbnail": "https://img.youtube.com/vi/gyabXyZielE/maxresdefault.jpg",
+      "full": "https://www.youtube.com/watch?v=gyabXyZielE",
+      "title": "Chair Model",
+      "description": ""
+    },
+    {
       "type": "image",
       "category": "renders",
       "thumbnail": "",
@@ -128,17 +136,33 @@ const SITE = {
     {
       "type": "image",
       "category": "renders",
+      "thumbnail": "https://x.com/evelynanims/status/2017022734082199869",
+      "full": "https://x.com/evelynanims/status/2017022734082199869",
+      "title": "Lighting Blender Practice 1",
+      "description": ""
+    },
+    {
+      "type": "image",
+      "category": "renders",
+      "thumbnail": "",
+      "full": "https://x.com/evelynanims/status/2025740194088202583",
+      "title": "Prototype Render",
+      "description": ""
+    },
+    {
+      "type": "image",
+      "category": "renders",
       "thumbnail": "https://x.com/evelynanims/status/2036732790159622424",
       "full": "https://x.com/evelynanims/status/2036732790159622424",
       "title": "Aftermath fanart",
       "description": ""
     },
     {
-      "type": "video",
-      "category": "rigs",
-      "thumbnail": "https://img.youtube.com/vi/gyabXyZielE/maxresdefault.jpg",
-      "full": "https://www.youtube.com/watch?v=gyabXyZielE",
-      "title": "Chair Model",
+      "type": "image",
+      "category": "renders",
+      "thumbnail": "https://x.com/evelynanims/status/1981574356712247698",
+      "full": "https://x.com/evelynanims/status/1981574356712247698",
+      "title": "Mine imator water test render",
       "description": ""
     }
   ],
