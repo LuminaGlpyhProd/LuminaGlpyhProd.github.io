@@ -124,6 +124,22 @@ const SITE = {
       "full": "https://www.youtube.com/watch?v=gyabXyZielE",
       "title": "Chair Model",
       "description": ""
+    },
+    {
+      "type": "image",
+      "category": "renders",
+      "thumbnail": "https://x.com/evelynanims/status/2041554498381050093",
+      "full": "https://x.com/evelynanims/status/2041554498381050093",
+      "title": "MC Server Commission",
+      "description": ""
+    },
+    {
+      "type": "video",
+      "category": "videos",
+      "thumbnail": "https://img.youtube.com/vi/BYyEubSC1TY/maxresdefault.jpg",
+      "full": "https://www.youtube.com/watch?v=BYyEubSC1TY",
+      "title": " Syuu Network Trailer Teaser",
+      "description": "Lighting: Entire Duration"
     }
   ],
   "services": [
