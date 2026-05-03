@@ -164,6 +164,14 @@ const SITE = {
       "full": "https://x.com/evelynanims/status/1981574356712247698",
       "title": "Mine imator water test render",
       "description": ""
+    },
+    {
+      "type": "video",
+      "category": "rigs",
+      "thumbnail": "https://img.youtube.com/vi/BD_6zBzC4Vs/maxresdefault.jpg",
+      "full": "https://youtu.be/BD_6zBzC4Vs",
+      "title": "Evelyn Model Showcase",
+      "description": ""
     }
   ],
   "services": [
